@@ -137,8 +137,13 @@ exports.addUser = async(req,res,next)=>{
       let { name, username, email, status, website, phone,userId } = req.body;
       console.log("email",email);
       console.log("status",status);
-      var count = await User.countDocuments();
-      userId = count+1+10;
+      // var count = await User.userList.length();
+      // console.log("newUserData",newUserData)
+      var myUser = await User.findOne({_id:req.user.id})
+      console.log("myuser",myUser);
+      let userList = myUser.userList;
+      userId = userList.length+1;
+      console.log("userlist length",userList.length);
       const newUserData = {
          name,
          username,
@@ -148,10 +153,6 @@ exports.addUser = async(req,res,next)=>{
          website,
          userId
       }
-      console.log("newUserData",newUserData)
-      var myUser = await User.findOne({_id:req.user.id})
-      console.log("myuser",myUser);
-      let userList = myUser.userList;
       userList.push(newUserData);
       console.log("userList",userList);
       const updatedUser = await User.findByIdAndUpdate(req.user.id,{ userList : userList},{returnOriginal: false})
